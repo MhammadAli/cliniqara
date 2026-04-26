@@ -1,3 +1,6 @@
+import 'package:cliniqara/core/database/app_database.dart';
+import 'package:cliniqara/features/patients/data/repositories/patient_repository_impl.dart';
+import 'package:cliniqara/features/patients/domain/repositories/patient_repository.dart';
 import 'package:get_it/get_it.dart';
 
 /// Global service locator instance.
@@ -7,26 +10,32 @@ final GetIt getIt = GetIt.instance;
 /// Initializes all dependencies in the service locator.
 ///
 /// Call this once in [main] before [runApp].
-/// Register dependencies in dependency order (data layer first, then domain,
-/// then presentation).
+/// Dependencies are registered in dependency order (data layer first, then
+/// domain, then presentation).
 Future<void> initDependencies() async {
   // ─── Database ──────────────────────────────────────────────────────────────
-  // TODO(phase-2): Register AppDatabase singleton here.
-  // Example:
-  // getIt.registerSingleton<AppDatabase>(AppDatabase());
+  // Singleton: only one database connection must exist for the app lifetime.
+  getIt.registerSingleton<AppDatabase>(AppDatabase());
 
   // ─── Repositories ──────────────────────────────────────────────────────────
-  // TODO(phase-2): Register repository implementations here.
+  // Lazy singleton: constructed once on first use; reused thereafter.
+  getIt.registerLazySingleton<PatientRepository>(
+    () => PatientRepositoryImpl(getIt<AppDatabase>()),
+  );
 
   // ─── Use Cases ─────────────────────────────────────────────────────────────
-  // TODO(phase-2): Register use cases here.
+  // TODO(phase-3): Register use cases here.
+  // Example:
+  // getIt.registerLazySingleton<CreatePatientUseCase>(
+  //   () => CreatePatientUseCase(getIt<PatientRepository>()),
+  // );
 
   // ─── Cubits / Blocs ────────────────────────────────────────────────────────
-  // TODO(phase-2): Register Cubits as factories here.
-  // Cubits should be registered as factories (not singletons) so each
-  // navigation push gets a fresh instance.
+  // TODO(phase-3): Register Cubits as factories here.
+  // Cubits MUST be factories (not singletons) so each route push gets a
+  // fresh instance with a clean state.
   // Example:
   // getIt.registerFactory<OsceFormCubit>(
-  //   () => OsceFormCubit(getIt<SaveVisitUseCase>()),
+  //   () => OsceFormCubit(getIt<PatientRepository>()),
   // );
 }
