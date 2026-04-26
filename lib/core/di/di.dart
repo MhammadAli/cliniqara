@@ -1,4 +1,5 @@
 import 'package:cliniqara/core/database/app_database.dart';
+import 'package:cliniqara/features/osce_form/presentation/osce_form_cubit.dart';
 import 'package:cliniqara/features/patients/data/repositories/patient_repository_impl.dart';
 import 'package:cliniqara/features/patients/domain/repositories/patient_repository.dart';
 import 'package:get_it/get_it.dart';
@@ -24,18 +25,16 @@ Future<void> initDependencies() async {
   );
 
   // ─── Use Cases ─────────────────────────────────────────────────────────────
-  // TODO(phase-3): Register use cases here.
-  // Example:
-  // getIt.registerLazySingleton<CreatePatientUseCase>(
-  //   () => CreatePatientUseCase(getIt<PatientRepository>()),
-  // );
+  // TODO: Register use cases here as needed.
 
   // ─── Cubits / Blocs ────────────────────────────────────────────────────────
-  // TODO(phase-3): Register Cubits as factories here.
-  // Cubits MUST be factories (not singletons) so each route push gets a
-  // fresh instance with a clean state.
-  // Example:
-  // getIt.registerFactory<OsceFormCubit>(
-  //   () => OsceFormCubit(getIt<PatientRepository>()),
-  // );
+  // Factory: each route push gets a fresh Cubit with clean state.
+  // [param1] = patientId (required), [param2] = existing visitId (optional).
+  getIt.registerFactoryParam<OsceFormCubit, String, String?>(
+    (patientId, existingVisitId) => OsceFormCubit(
+      repository: getIt<PatientRepository>(),
+      patientId: patientId,
+      existingVisitId: existingVisitId,
+    ),
+  );
 }
