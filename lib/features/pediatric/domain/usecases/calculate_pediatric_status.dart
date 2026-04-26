@@ -1,5 +1,3 @@
-import 'package:cliniqara/features/pediatric/domain/usecases/immunization_calculator.dart';
-
 class CalculatePediatricStatus {
   bool call(DateTime dateOfBirth) {
     final now = DateTime.now();

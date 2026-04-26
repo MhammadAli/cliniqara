@@ -11,7 +11,7 @@ import 'package:cliniqara/features/patients/domain/repositories/patient_reposito
 import 'package:cliniqara/features/pediatric/domain/usecases/calculate_pediatric_status.dart';
 import 'package:cliniqara/features/pediatric/domain/usecases/immunization_calculator.dart';
 
-import 'osce_form_state.dart';
+import 'package:cliniqara/features/osce_form/presentation/osce_form_state.dart';
 
 /// Keys used as [FormControl] names throughout the OSCE form.
 ///
