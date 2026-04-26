@@ -1,6 +1,6 @@
 import 'package:drift/drift.dart';
 
-import 'patients_table.dart';
+import 'package:cliniqara/core/database/tables/patients_table.dart';
 
 /// Drift table definition for clinical visits.
 ///
@@ -12,8 +12,7 @@ import 'patients_table.dart';
 class Visits extends Table {
   TextColumn get id => text()(); // UUID
   TextColumn get patientId => text().references(Patients, #id)();
-  DateTimeColumn get visitDate =>
-      dateTime().withDefault(currentDateAndTime)();
+  DateTimeColumn get visitDate => dateTime().withDefault(currentDateAndTime)();
   TextColumn get mainComplaint => text().nullable()();
   TextColumn get createdBy =>
       text().withDefault(const Constant('local_doctor'))();

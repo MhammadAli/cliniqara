@@ -5,12 +5,12 @@ import 'package:drift/native.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
-import 'daos/patients_dao.dart';
-import 'daos/visits_dao.dart';
-import 'tables/immunizations_table.dart';
-import 'tables/patients_table.dart';
-import 'tables/visits_table.dart';
-import 'tables/vitals_table.dart';
+import 'package:cliniqara/core/database/daos/patients_dao.dart';
+import 'package:cliniqara/core/database/daos/visits_dao.dart';
+import 'package:cliniqara/core/database/tables/immunizations_table.dart';
+import 'package:cliniqara/core/database/tables/patients_table.dart';
+import 'package:cliniqara/core/database/tables/visits_table.dart';
+import 'package:cliniqara/core/database/tables/vitals_table.dart';
 
 part 'app_database.g.dart';
 
@@ -35,13 +35,13 @@ class AppDatabase extends _$AppDatabase {
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
-        onCreate: (Migrator m) async {
-          await m.createAll();
-        },
-        onUpgrade: (Migrator m, int from, int to) async {
-          // Add future ALTER TABLE statements here as schemaVersion grows.
-        },
-      );
+    onCreate: (Migrator m) async {
+      await m.createAll();
+    },
+    onUpgrade: (Migrator m, int from, int to) async {
+      // Add future ALTER TABLE statements here as schemaVersion grows.
+    },
+  );
 }
 
 /// Opens (or creates) the SQLite database file in the app's documents dir.

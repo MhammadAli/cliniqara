@@ -1,7 +1,7 @@
 import 'package:drift/drift.dart';
 
-import '../app_database.dart';
-import '../tables/patients_table.dart';
+import 'package:cliniqara/core/database/app_database.dart';
+import 'package:cliniqara/core/database/tables/patients_table.dart';
 
 part 'patients_dao.g.dart';
 
@@ -10,7 +10,8 @@ part 'patients_dao.g.dart';
 /// Keeps SQL logic out of repositories. Repositories call DAO methods;
 /// they never access [AppDatabase] tables directly.
 @DriftAccessor(tables: [Patients])
-class PatientsDao extends DatabaseAccessor<AppDatabase> with _$PatientsDaoMixin {
+class PatientsDao extends DatabaseAccessor<AppDatabase>
+    with _$PatientsDaoMixin {
   PatientsDao(super.db);
 
   // ─── Read ───────────────────────────────────────────────────────────────────

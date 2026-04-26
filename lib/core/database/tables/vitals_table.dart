@@ -1,6 +1,6 @@
 import 'package:drift/drift.dart';
 
-import 'visits_table.dart';
+import 'package:cliniqara/core/database/tables/visits_table.dart';
 
 /// Drift table for vital signs.
 ///

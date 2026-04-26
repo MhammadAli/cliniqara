@@ -1,6 +1,6 @@
 import 'package:drift/drift.dart';
 
-import 'patients_table.dart';
+import 'package:cliniqara/core/database/tables/patients_table.dart';
 
 /// Drift table for immunization records.
 ///

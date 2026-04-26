@@ -1,8 +1,8 @@
 import 'package:drift/drift.dart';
 
-import '../app_database.dart';
-import '../tables/visits_table.dart';
-import '../tables/vitals_table.dart';
+import 'package:cliniqara/core/database/app_database.dart';
+import 'package:cliniqara/core/database/tables/visits_table.dart';
+import 'package:cliniqara/core/database/tables/vitals_table.dart';
 
 part 'visits_dao.g.dart';
 
@@ -35,9 +35,9 @@ class VisitsDao extends DatabaseAccessor<AppDatabase> with _$VisitsDaoMixin {
       (select(visits)..where((v) => v.id.equals(id))).getSingleOrNull();
 
   /// Returns the vitals record for a given [visitId], or `null`.
-  Future<VitalSign?> getVitalsForVisit(String visitId) =>
-      (select(vitals)..where((v) => v.visitId.equals(visitId)))
-          .getSingleOrNull();
+  Future<VitalSign?> getVitalsForVisit(String visitId) => (select(
+    vitals,
+  )..where((v) => v.visitId.equals(visitId))).getSingleOrNull();
 
   // ─── Write ──────────────────────────────────────────────────────────────────
 
@@ -48,13 +48,12 @@ class VisitsDao extends DatabaseAccessor<AppDatabase> with _$VisitsDaoMixin {
   Future<void> insertVisitWithVitals({
     required VisitsCompanion visitCompanion,
     VitalsCompanion? vitalsCompanion,
-  }) =>
-      transaction(() async {
-        await into(visits).insert(visitCompanion);
-        if (vitalsCompanion != null) {
-          await into(vitals).insert(vitalsCompanion);
-        }
-      });
+  }) => transaction(() async {
+    await into(visits).insert(visitCompanion);
+    if (vitalsCompanion != null) {
+      await into(vitals).insert(vitalsCompanion);
+    }
+  });
 
   /// Updates an existing visit row (e.g., to patch the JSON payload).
   Future<bool> updateVisit(VisitsCompanion companion) =>
@@ -62,7 +61,7 @@ class VisitsDao extends DatabaseAccessor<AppDatabase> with _$VisitsDaoMixin {
 
   /// Deletes a visit and its vitals (cascade via FK, but explicit for safety).
   Future<void> deleteVisit(String visitId) => transaction(() async {
-        await (delete(vitals)..where((v) => v.visitId.equals(visitId))).go();
-        await (delete(visits)..where((v) => v.id.equals(visitId))).go();
-      });
+    await (delete(vitals)..where((v) => v.visitId.equals(visitId))).go();
+    await (delete(visits)..where((v) => v.id.equals(visitId))).go();
+  });
 }
