@@ -1,0 +1,2 @@
+/// Core utils: UUID generators, date formatters, and other pure helpers.
+library;

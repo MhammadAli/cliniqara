@@ -1,0 +1,5 @@
+/// Core presentation: reusable global widgets.
+/// 
+/// Place ExpansionTile wrappers, CollapsibleSectionCard, chip components,
+/// and any other shared UI widgets here.
+library;
