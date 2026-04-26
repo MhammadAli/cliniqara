@@ -2,6 +2,8 @@ import 'package:cliniqara/core/database/app_database.dart';
 import 'package:cliniqara/features/osce_form/presentation/osce_form_cubit.dart';
 import 'package:cliniqara/features/patients/data/repositories/patient_repository_impl.dart';
 import 'package:cliniqara/features/patients/domain/repositories/patient_repository.dart';
+import 'package:cliniqara/features/pediatric/domain/usecases/calculate_pediatric_status.dart';
+import 'package:cliniqara/features/pediatric/domain/usecases/immunization_calculator.dart';
 import 'package:get_it/get_it.dart';
 
 /// Global service locator instance.
@@ -25,7 +27,12 @@ Future<void> initDependencies() async {
   );
 
   // ─── Use Cases ─────────────────────────────────────────────────────────────
-  // TODO: Register use cases here as needed.
+  getIt.registerLazySingleton<CalculatePediatricStatus>(
+    () => CalculatePediatricStatus(),
+  );
+  getIt.registerLazySingleton<ImmunizationCalculator>(
+    () => ImmunizationCalculator(),
+  );
 
   // ─── Cubits / Blocs ────────────────────────────────────────────────────────
   // Factory: each route push gets a fresh Cubit with clean state.
@@ -33,6 +40,8 @@ Future<void> initDependencies() async {
   getIt.registerFactoryParam<OsceFormCubit, String, String?>(
     (patientId, existingVisitId) => OsceFormCubit(
       repository: getIt<PatientRepository>(),
+      calculatePediatricStatus: getIt<CalculatePediatricStatus>(),
+      immunizationCalculator: getIt<ImmunizationCalculator>(),
       patientId: patientId,
       existingVisitId: existingVisitId,
     ),

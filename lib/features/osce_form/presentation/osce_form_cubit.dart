@@ -8,6 +8,9 @@ import 'package:uuid/uuid.dart';
 import 'package:cliniqara/features/patients/domain/entities/visit_entity.dart';
 import 'package:cliniqara/features/patients/domain/repositories/patient_repository.dart';
 
+import 'package:cliniqara/features/pediatric/domain/usecases/calculate_pediatric_status.dart';
+import 'package:cliniqara/features/pediatric/domain/usecases/immunization_calculator.dart';
+
 import 'osce_form_state.dart';
 
 /// Keys used as [FormControl] names throughout the OSCE form.
@@ -41,6 +44,14 @@ abstract final class OsceFormKeys {
   static const hpiAnalysis = 'hpiAnalysis';
   static const severity = 'severity';
   static const radiation = 'radiation';
+
+  // ── Patient Info ────────────────────────────────────────────────────────────
+  static const dateOfBirth = 'dateOfBirth';
+
+  // ── Pediatric History (dynamic) ───────────────────────────────────────────
+  static const pediatricHistory = 'pediatricHistory';
+  static const developmentalMilestones = 'developmentalMilestones';
+  static const immunizations = 'immunizations';
 }
 
 /// Manages the reactive form state for the entire OSCE clinical form.
@@ -55,19 +66,27 @@ abstract final class OsceFormKeys {
 class OsceFormCubit extends Cubit<OsceFormState> {
   OsceFormCubit({
     required PatientRepository repository,
+    required CalculatePediatricStatus calculatePediatricStatus,
+    required ImmunizationCalculator immunizationCalculator,
     required String patientId,
     String? existingVisitId,
   }) : _repository = repository,
+       _calculatePediatricStatus = calculatePediatricStatus,
+       _immunizationCalculator = immunizationCalculator,
        _patientId = patientId,
        _visitId = existingVisitId ?? const Uuid().v4(),
        super(OsceFormState(visitId: existingVisitId)) {
     _listenToChiefComplaint();
+    _listenToDateOfBirth();
   }
 
   final PatientRepository _repository;
+  final CalculatePediatricStatus _calculatePediatricStatus;
+  final ImmunizationCalculator _immunizationCalculator;
   final String _patientId;
   final String _visitId;
   StreamSubscription<dynamic>? _chiefComplaintSub;
+  StreamSubscription<dynamic>? _dobSub;
 
   // ─── Reactive Form ────────────────────────────────────────────────────────
 
@@ -79,6 +98,7 @@ class OsceFormCubit extends Cubit<OsceFormState> {
     OsceFormKeys.chiefComplaint: FormControl<String>(
       validators: [Validators.required],
     ),
+    OsceFormKeys.dateOfBirth: FormControl<DateTime>(),
 
     // ── Vitals ────────────────────────────────────────────────────────────
     OsceFormKeys.vitals: FormGroup({
@@ -142,6 +162,73 @@ class OsceFormCubit extends Cubit<OsceFormState> {
     form.removeControl(OsceFormKeys.hpiAnalysis);
   }
 
+  // ─── Dynamic Pediatric Logic ──────────────────────────────────────────────
+
+  void _listenToDateOfBirth() {
+    final control = form.control(OsceFormKeys.dateOfBirth);
+    _dobSub = control.valueChanges.listen((value) {
+      if (value is DateTime) {
+        _handleDateOfBirthChanged(value);
+      } else {
+        _removePediatricHistory();
+      }
+    });
+  }
+
+  void _handleDateOfBirthChanged(DateTime dob) {
+    final isPediatric = _calculatePediatricStatus(dob);
+    if (isPediatric) {
+      _addPediatricHistory(dob);
+    } else {
+      _removePediatricHistory();
+    }
+  }
+
+  void _addPediatricHistory(DateTime dob) {
+    if (form.contains(OsceFormKeys.pediatricHistory)) {
+      form.removeControl(OsceFormKeys.pediatricHistory);
+    }
+
+    final now = DateTime.now();
+    int years = now.year - dob.year;
+    int months = now.month - dob.month;
+    int days = now.day - dob.day;
+    if (days < 0) {
+      final prevMonth = DateTime(now.year, now.month, 0);
+      days += prevMonth.day;
+      months--;
+    }
+    if (months < 0) {
+      months += 12;
+      years--;
+    }
+
+    final recommendations = _immunizationCalculator(
+      years: years,
+      months: months,
+      days: days,
+    );
+
+    final immunizationControls = <String, FormControl<String>>{};
+    for (final rec in recommendations) {
+      immunizationControls[rec.vaccine] = FormControl<String>(
+        value: rec.status.name,
+      );
+    }
+
+    form.addAll({
+      OsceFormKeys.pediatricHistory: FormGroup({
+        OsceFormKeys.developmentalMilestones: FormControl<String>(),
+        OsceFormKeys.immunizations: FormGroup(immunizationControls),
+      }),
+    });
+  }
+
+  void _removePediatricHistory() {
+    if (!form.contains(OsceFormKeys.pediatricHistory)) return;
+    form.removeControl(OsceFormKeys.pediatricHistory);
+  }
+
   // ─── Persistence ──────────────────────────────────────────────────────────
 
   /// Serialises the current [form] value to JSON and persists it via the
@@ -189,6 +276,7 @@ class OsceFormCubit extends Cubit<OsceFormState> {
   @override
   Future<void> close() {
     _chiefComplaintSub?.cancel();
+    _dobSub?.cancel();
     form.dispose();
     return super.close();
   }
