@@ -1,1 +1,16 @@
 include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  # This prevents the Domain layer from importing Data layer models
+  exclude:
+    - "**/*.g.dart"
+    - "**/*.freezed.dart"
+  errors:
+    # Treat bad imports as fatal errors, not just warnings
+    depend_on_referenced_packages: error
+
+linter:
+  rules:
+    # Enforce strict package imports for Clean Architecture clarity
+    - always_use_package_imports
+    - avoid_relative_lib_imports
