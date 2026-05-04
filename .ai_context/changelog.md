@@ -18,3 +18,8 @@
 * Assembled the Dependency Injection root in `lib/core/di/injection_container.dart` using `get_it`, providing lazy singletons for `AppDatabase` (with `NativeDatabase.memory()`) and `PatientRepositoryImpl`, alongside a factory for `PatientRegistrationCubit`.
 * Created standard boilerplate states (`Initial`, `Loading`, `Success`, `Error`) in `lib/presentation/cubits/patient_registration/patient_registration_state.dart` with `Equatable`.
 * Built the `PatientRegistrationCubit` mapping raw UI data to a pure Domain `Patient` entity (generating IDs via `uuid`), processing safe exception handling via `dartz`'s `.fold()` mechanism.
+
+<!-- changelog.md -->
+* Extracted the name/phone input into `lib/presentation/widgets/custom_text_field.dart`, using dynamic theming (`Theme.of(context)`) and scaling properties to replace hardcoded Figma hex colors and rigid dimensions.
+* Created `lib/presentation/widgets/age_input_row.dart` encapsulating the age input `CustomTextField` wrapped alongside a native Material 3 `SegmentedButton` to control the Domain's `AgeUnit` toggle constraint logically via callbacks.
+* Built `lib/presentation/widgets/gender_selection_row.dart` mapping over the `Gender` enum values to construct dynamic selectable cards that broadcast up via a `ValueChanged<Gender>` event.
