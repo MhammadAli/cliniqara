@@ -33,3 +33,8 @@
 * Updated `lib/main.dart` with an asynchronous `main` method, executing `WidgetsFlutterBinding.ensureInitialized()` to ensure `await di.init()` finishes safely before the app launches.
 * Replaced standard navigation logic with a `GoRouter` configuration (Rule #5), defining `/` as the primary route targeting the newly created `PatientRegistrationScreen`.
 * Wrapped the entry route builder in a `BlocProvider` mapped to `di.sl<PatientRegistrationCubit>()`, delivering the injected cubit to the UI screen effectively.
+
+<!-- changelog.md -->
+* Created `lib/core/navigation/app_router.dart` to hold the application's GoRouter setup (`appRouter`), decoupling mapping responsibilities from the root entry file.
+* Centralized route dependencies (`PatientRegistrationScreen`, `PatientRegistrationCubit`, etc.) into the router's scope.
+* Stripped `lib/main.dart` back to a clean entry structure handling only base `MaterialApp.router` configurations and global `di.init()` binding.
