@@ -1,5 +1,10 @@
+import 'dart:io';
 import 'package:get_it/get_it.dart';
+import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' as p;
+
 import '../../data/datasources/local/app_database.dart';
 import '../../data/repositories/patient_repository_impl.dart';
 import '../../domain/repositories/patient_repository.dart';
@@ -17,8 +22,13 @@ Future<void> init() async {
   );
 
   // Data sources
-  // Using NativeDatabase.memory() by default for the setup as DI root schema demands a query executor
-  sl.registerLazySingleton<AppDatabase>(
-    () => AppDatabase(NativeDatabase.memory()),
-  );
+  // Initialize persistent SQLite database
+  sl.registerLazySingleton<AppDatabase>(() {
+    final lazyDb = LazyDatabase(() async {
+      final dbFolder = await getApplicationDocumentsDirectory();
+      final file = File(p.join(dbFolder.path, 'cliniqara.sqlite'));
+      return NativeDatabase.createInBackground(file);
+    });
+    return AppDatabase(lazyDb);
+  });
 }
