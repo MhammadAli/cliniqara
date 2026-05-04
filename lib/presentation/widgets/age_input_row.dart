@@ -20,7 +20,6 @@ class AgeInputRow extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
-          flex: 2,
           child: CustomTextField(
             controller: controller,
             hintText: '0',
