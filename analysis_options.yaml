@@ -1,1 +1,48 @@
 include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  plugins:
+    - import_lint
+
+import_lint:
+  rules:
+    presentation_no_data:
+      target: "package:cliniqara/presentation/**/*.dart"
+      from: "package:cliniqara/data/**/*.dart"
+      except: []
+
+    presentation_no_drift:
+      target: "package:cliniqara/presentation/**/*.dart"
+      from: "package:drift/**/*.dart"
+      except: []
+      
+    presentation_no_sqlite_flutter_libs:
+      target: "package:cliniqara/presentation/**/*.dart"
+      from: "package:sqlite3_flutter_libs/**/*.dart"
+      except: []
+      
+    presentation_no_sqlite3:
+      target: "package:cliniqara/presentation/**/*.dart"
+      from: "package:sqlite3/**/*.dart"
+      except: []
+
+    domain_no_data:
+      target: "package:cliniqara/domain/**/*.dart"
+      from: "package:cliniqara/data/**/*.dart"
+      except: []
+      
+    domain_no_presentation:
+      target: "package:cliniqara/domain/**/*.dart"
+      from: "package:cliniqara/presentation/**/*.dart"
+      except: []
+      
+    domain_no_flutter:
+      target: "package:cliniqara/domain/**/*.dart"
+      from: "package:flutter/**/*.dart"
+      except: []
+
+    data_no_presentation:
+      target: "package:cliniqara/data/**/*.dart"
+      from: "package:cliniqara/presentation/**/*.dart"
+      except: []
+
