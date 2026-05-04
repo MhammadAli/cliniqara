@@ -15,10 +15,7 @@ extension PatientModelMapper on PatientModel {
           orElse: () => AgeUnit.years,
         ),
       ),
-      gender: Gender.values.firstWhere(
-        (e) => e.name == gender,
-        orElse: () => Gender.other,
-      ),
+      gender: Gender.values.firstWhere((e) => e.name == gender),
       phoneNumber: phoneNumber,
       extraData: jsonDecode(extraData) as Map<String, dynamic>,
     );

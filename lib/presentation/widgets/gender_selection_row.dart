@@ -42,14 +42,23 @@ class GenderSelectionRow extends StatelessWidget {
                   border: Border.all(color: borderColor),
                 ),
                 alignment: Alignment.center,
-                child: Text(
-                  _capitalize(gender.name),
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    color: textColor,
-                    fontWeight: isSelected
-                        ? FontWeight.bold
-                        : FontWeight.normal,
-                  ),
+                child: Column(
+                  children: [
+                    Icon(
+                      gender == Gender.male ? Icons.male : Icons.female,
+                      color: textColor,
+                      size: 32,
+                    ),
+                    Text(
+                      _capitalize(gender.name),
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        color: textColor,
+                        fontWeight: isSelected
+                            ? FontWeight.bold
+                            : FontWeight.normal,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),

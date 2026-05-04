@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 
 enum AgeUnit { years, months, days }
 
-enum Gender { male, female, other }
+enum Gender { male, female }
 
 class PatientAge extends Equatable {
   final int value;
