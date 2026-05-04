@@ -28,3 +28,8 @@
 * Created the `PatientRegistrationScreen` utilizing isolated `widgets/` components to assemble the UI effectively within a `SingleChildScrollView` to handle keyboard popping.
 * Integrated `BlocConsumer<PatientRegistrationCubit, PatientRegistrationState>` correctly to respond to UI interactions, validating fields locally, triggering Cubit `submitRegistration`, and disabling interactions smoothly when `state is PatientRegistrationLoading`.
 * Enforced responsive constraints limiting the central registration card to `maxWidth: 800` utilizing flexible layout parameters mapped globally to Material 3 `.colorScheme` elements preventing any hardcoded values to persist.
+
+<!-- changelog.md -->
+* Updated `lib/main.dart` with an asynchronous `main` method, executing `WidgetsFlutterBinding.ensureInitialized()` to ensure `await di.init()` finishes safely before the app launches.
+* Replaced standard navigation logic with a `GoRouter` configuration (Rule #5), defining `/` as the primary route targeting the newly created `PatientRegistrationScreen`.
+* Wrapped the entry route builder in a `BlocProvider` mapped to `di.sl<PatientRegistrationCubit>()`, delivering the injected cubit to the UI screen effectively.
