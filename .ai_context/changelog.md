@@ -1,4 +1,5 @@
-<!-- changelog.md -->
-* Created the `Patient` domain entity with a `copyWith` method, utilizing `equatable` for value comparison.
-* Implemented the `PatientAge` class with an `AgeUnit` enum (years, months, days) to accurately represent dynamic age types from the UI.
-* Added a `Gender` enum (male, female, other) and an `extraData` map with a default empty fallback to satisfy the hybrid drift schema rule.
+# Target: `changelog.md`
+
+- Created pure Domain entity `Patient` in `lib/domain/entities/patient.dart`.
+- Created `PatientAge` value object utilizing `AgeUnit` enum to support scalar age values based on UI toggle selection.
+- Included `extraData` as a `Map<String, dynamic>` to support the hybrid database schema future-proofing strategy.
