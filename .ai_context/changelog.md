@@ -23,3 +23,8 @@
 * Extracted the name/phone input into `lib/presentation/widgets/custom_text_field.dart`, using dynamic theming (`Theme.of(context)`) and scaling properties to replace hardcoded Figma hex colors and rigid dimensions.
 * Created `lib/presentation/widgets/age_input_row.dart` encapsulating the age input `CustomTextField` wrapped alongside a native Material 3 `SegmentedButton` to control the Domain's `AgeUnit` toggle constraint logically via callbacks.
 * Built `lib/presentation/widgets/gender_selection_row.dart` mapping over the `Gender` enum values to construct dynamic selectable cards that broadcast up via a `ValueChanged<Gender>` event.
+
+<!-- changelog.md -->
+* Created the `PatientRegistrationScreen` utilizing isolated `widgets/` components to assemble the UI effectively within a `SingleChildScrollView` to handle keyboard popping.
+* Integrated `BlocConsumer<PatientRegistrationCubit, PatientRegistrationState>` correctly to respond to UI interactions, validating fields locally, triggering Cubit `submitRegistration`, and disabling interactions smoothly when `state is PatientRegistrationLoading`.
+* Enforced responsive constraints limiting the central registration card to `maxWidth: 800` utilizing flexible layout parameters mapped globally to Material 3 `.colorScheme` elements preventing any hardcoded values to persist.
