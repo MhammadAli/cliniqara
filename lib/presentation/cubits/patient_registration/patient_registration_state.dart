@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import '../../../domain/entities/patient.dart';
 
 abstract class PatientRegistrationState extends Equatable {
   const PatientRegistrationState();
@@ -8,7 +9,24 @@ abstract class PatientRegistrationState extends Equatable {
 }
 
 class PatientRegistrationInitial extends PatientRegistrationState {
-  const PatientRegistrationInitial();
+  const PatientRegistrationInitial({
+    this.selectedAgeUnit = AgeUnit.years,
+    this.selectedGender,
+  });
+
+  final AgeUnit selectedAgeUnit;
+  final Gender? selectedGender;
+
+  PatientRegistrationInitial copyWith({
+    AgeUnit? selectedAgeUnit,
+    Gender? selectedGender,
+  }) => PatientRegistrationInitial(
+    selectedAgeUnit: selectedAgeUnit ?? this.selectedAgeUnit,
+    selectedGender: selectedGender ?? this.selectedGender,
+  );
+
+  @override
+  List<Object?> get props => [selectedAgeUnit, selectedGender];
 }
 
 class PatientRegistrationLoading extends PatientRegistrationState {
@@ -20,9 +38,8 @@ class PatientRegistrationSuccess extends PatientRegistrationState {
 }
 
 class PatientRegistrationError extends PatientRegistrationState {
-  final String message;
-
   const PatientRegistrationError(this.message);
+  final String message;
 
   @override
   List<Object?> get props => [message];

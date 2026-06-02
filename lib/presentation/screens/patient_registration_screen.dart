@@ -6,6 +6,7 @@ import '../cubits/patient_registration/patient_registration_state.dart';
 import '../widgets/custom_text_field.dart';
 import '../widgets/age_input_row.dart';
 import '../widgets/gender_selection_row.dart';
+import '../widgets/section_header.dart'; // extracted widget (Fix 3)
 import '../../core/theme/app_colors.dart';
 
 class PatientRegistrationScreen extends StatefulWidget {
@@ -16,13 +17,13 @@ class PatientRegistrationScreen extends StatefulWidget {
       _PatientRegistrationScreenState();
 }
 
+// Controllers are lifecycle-bound to the widget tree — keeping StatefulWidget
+// solely for dispose() is the accepted Flutter pattern when using raw
+// TextEditingControllers. All business state lives in the Cubit.
 class _PatientRegistrationScreenState extends State<PatientRegistrationScreen> {
   final _nameController = TextEditingController();
   final _ageController = TextEditingController();
   final _phoneController = TextEditingController();
-
-  AgeUnit _selectedAgeUnit = AgeUnit.years;
-  Gender? _selectedGender;
 
   @override
   void dispose() {
@@ -30,39 +31,6 @@ class _PatientRegistrationScreenState extends State<PatientRegistrationScreen> {
     _ageController.dispose();
     _phoneController.dispose();
     super.dispose();
-  }
-
-  void _submit(BuildContext context) {
-    if (_nameController.text.trim().isEmpty) {
-      _showSnackBar(context, 'Please enter the patient name.', isError: true);
-      return;
-    }
-
-    if (_ageController.text.trim().isEmpty) {
-      _showSnackBar(context, 'Please enter the patient age.', isError: true);
-      return;
-    }
-
-    if (_selectedGender == null) {
-      _showSnackBar(context, 'Please select a gender.', isError: true);
-      return;
-    }
-
-    final ageValue = int.tryParse(_ageController.text.trim());
-    if (ageValue == null) {
-      _showSnackBar(context, 'Please enter a valid age number.', isError: true);
-      return;
-    }
-
-    context.read<PatientRegistrationCubit>().submitRegistration(
-      fullName: _nameController.text.trim(),
-      ageValue: ageValue,
-      ageUnit: _selectedAgeUnit,
-      gender: _selectedGender!,
-      phoneNumber: _phoneController.text.trim().isEmpty
-          ? null
-          : _phoneController.text.trim(),
-    );
   }
 
   void _showSnackBar(
@@ -73,10 +41,7 @@ class _PatientRegistrationScreenState extends State<PatientRegistrationScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: isError
-            ? AppColors.error
-            : AppColors
-                  .secondary /* Using the secondary teal color for success states */,
+        backgroundColor: isError ? AppColors.error : AppColors.secondary,
       ),
     );
   }
@@ -101,11 +66,18 @@ class _PatientRegistrationScreenState extends State<PatientRegistrationScreen> {
             _showSnackBar(context, state.message, isError: true);
           } else if (state is PatientRegistrationSuccess) {
             _showSnackBar(context, 'Patient registered successfully.');
-            /* TODO: Navigate away (e.g. context.go('/dashboard')) */
+            /* TODO: context.go('/dashboard') */
           }
         },
         builder: (context, state) {
+          final cubit = context.read<PatientRegistrationCubit>();
           final isLoading = state is PatientRegistrationLoading;
+
+          // Read form field values from state; fall back to defaults when
+          // state is not PatientRegistrationInitial (e.g. Loading).
+          final formState = state is PatientRegistrationInitial ? state : null;
+          final selectedAgeUnit = formState?.selectedAgeUnit ?? AgeUnit.years;
+          final selectedGender = formState?.selectedGender;
 
           return SafeArea(
             child: SingleChildScrollView(
@@ -146,10 +118,9 @@ class _PatientRegistrationScreenState extends State<PatientRegistrationScreen> {
                         ),
                         const SizedBox(height: 32),
 
-                        /* Name */
-                        _buildSectionHeader(
-                          theme,
-                          'Patient Name',
+                        // Name
+                        const SectionHeader(
+                          title: 'Patient Name',
                           isRequired: true,
                         ),
                         const SizedBox(height: 8),
@@ -159,33 +130,31 @@ class _PatientRegistrationScreenState extends State<PatientRegistrationScreen> {
                         ),
                         const SizedBox(height: 24),
 
-                        /* Age */
-                        _buildSectionHeader(theme, 'Age', isRequired: true),
+                        // Age
+                        const SectionHeader(title: 'Age', isRequired: true),
                         const SizedBox(height: 8),
                         AgeInputRow(
                           controller: _ageController,
-                          selectedUnit: _selectedAgeUnit,
+                          selectedUnit: selectedAgeUnit,
                           onUnitChanged: isLoading
-                              ? (unit) {}
-                              : (unit) =>
-                                    setState(() => _selectedAgeUnit = unit),
+                              ? (_) {}
+                              : cubit.ageUnitChanged,
                         ),
                         const SizedBox(height: 24),
 
-                        /* Gender */
-                        _buildSectionHeader(theme, 'Gender', isRequired: true),
+                        // Gender
+                        const SectionHeader(title: 'Gender', isRequired: true),
                         const SizedBox(height: 8),
                         GenderSelectionRow(
-                          selectedGender: _selectedGender,
+                          selectedGender: selectedGender,
                           onGenderChanged: isLoading
-                              ? (gender) {}
-                              : (gender) =>
-                                    setState(() => _selectedGender = gender),
+                              ? (_) {}
+                              : cubit.genderChanged,
                         ),
                         const SizedBox(height: 24),
 
-                        /* Phone Number */
-                        _buildSectionHeader(theme, 'Phone Number (Optional)'),
+                        // Phone Number
+                        const SectionHeader(title: 'Phone Number (Optional)'),
                         const SizedBox(height: 8),
                         CustomTextField(
                           controller: _phoneController,
@@ -194,14 +163,18 @@ class _PatientRegistrationScreenState extends State<PatientRegistrationScreen> {
                         ),
                         const SizedBox(height: 48),
 
-                        /* Next Button */
+                        // Next Button
                         SizedBox(
                           width: double.infinity,
                           height: 56,
                           child: FilledButton(
                             onPressed: isLoading
                                 ? null
-                                : () => _submit(context),
+                                : () => cubit.submitRegistration(
+                                    fullName: _nameController.text,
+                                    ageRaw: _ageController.text,
+                                    phoneRaw: _phoneController.text,
+                                  ),
                             style: FilledButton.styleFrom(
                               backgroundColor: AppColors.primary,
                               shape: RoundedRectangleBorder(
@@ -209,13 +182,14 @@ class _PatientRegistrationScreenState extends State<PatientRegistrationScreen> {
                               ),
                             ),
                             child: isLoading
-                                ? const SizedBox(
+                                ? SizedBox(
                                     height: 24,
                                     width: 24,
                                     child: CircularProgressIndicator(
                                       strokeWidth: 2,
+                                      // Fix 2: replaced Colors.white with theme token
                                       valueColor: AlwaysStoppedAnimation<Color>(
-                                        Colors.white,
+                                        theme.colorScheme.onPrimary,
                                       ),
                                     ),
                                   )
@@ -237,35 +211,6 @@ class _PatientRegistrationScreenState extends State<PatientRegistrationScreen> {
           );
         },
       ),
-    );
-  }
-
-  Widget _buildSectionHeader(
-    ThemeData theme,
-    String title, {
-    bool isRequired = false,
-  }) {
-    return Row(
-      children: [
-        Text(
-          title,
-          style: theme.textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.w500,
-            color: AppColors.textPrimary,
-          ),
-        ),
-        if (isRequired)
-          Padding(
-            padding: const EdgeInsets.only(left: 4.0),
-            child: Text(
-              '*',
-              style: theme.textTheme.titleMedium?.copyWith(
-                color: AppColors.error,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-      ],
     );
   }
 }
