@@ -38,3 +38,8 @@
 * Created `lib/core/navigation/app_router.dart` to hold the application's GoRouter setup (`appRouter`), decoupling mapping responsibilities from the root entry file.
 * Centralized route dependencies (`PatientRegistrationScreen`, `PatientRegistrationCubit`, etc.) into the router's scope.
 * Stripped `lib/main.dart` back to a clean entry structure handling only base `MaterialApp.router` configurations and global `di.init()` binding.
+
+
+- **[Fix][Rule 2 & 3] Lifted form state into Cubit**: `selectedAgeUnit` and `selectedGender` moved from `StatefulWidget` local state into `PatientRegistrationInitial` (with `copyWith`); added `ageUnitChanged()` and `genderChanged()` methods to the Cubit so the UI emits no mutations directly.
+- **[Fix][Rule 2 & 3] Moved all validation logic out of the UI**: The `_submit()` method with its null/parse checks was deleted from the screen and re-implemented inside `PatientRegistrationCubit.submitRegistration()`; the screen now passes raw strings and the Cubit decides validity, emitting error states on failure.
+- **[Fix][Rule 3] Replaced `Colors.white` hardcode + extracted `SectionHeader` widget**: `CircularProgressIndicator` color changed to `theme.colorScheme.onPrimary`; the inline `_buildSectionHeader` helper extracted to `presentation/widgets/section_header.dart` as a `StatelessWidget`, keeping the screen file well under the 250-line limit.
