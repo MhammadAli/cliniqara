@@ -4,6 +4,7 @@ import '../../../../../core/theme/app_colors.dart';
 class PatientInfoHeaderCard extends StatelessWidget {
   final String patientName;
   final int age;
+  final String ageUnit;
   final String gender;
   final String activeSection;
   final ValueChanged<String> onSectionChanged;
@@ -12,6 +13,7 @@ class PatientInfoHeaderCard extends StatelessWidget {
     super.key,
     required this.patientName,
     required this.age,
+    this.ageUnit = 'Years',
     required this.gender,
     required this.activeSection,
     required this.onSectionChanged,
@@ -88,7 +90,7 @@ class PatientInfoHeaderCard extends StatelessWidget {
               ),
             ),
             Text(
-              'Years',
+              ageUnit,
               style: theme.textTheme.bodySmall?.copyWith(
                 color: AppColors.primary,
                 fontWeight: FontWeight.w500,

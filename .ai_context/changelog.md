@@ -43,3 +43,8 @@
 - **[Fix][Rule 2 & 3] Lifted form state into Cubit**: `selectedAgeUnit` and `selectedGender` moved from `StatefulWidget` local state into `PatientRegistrationInitial` (with `copyWith`); added `ageUnitChanged()` and `genderChanged()` methods to the Cubit so the UI emits no mutations directly.
 - **[Fix][Rule 2 & 3] Moved all validation logic out of the UI**: The `_submit()` method with its null/parse checks was deleted from the screen and re-implemented inside `PatientRegistrationCubit.submitRegistration()`; the screen now passes raw strings and the Cubit decides validity, emitting error states on failure.
 - **[Fix][Rule 3] Replaced `Colors.white` hardcode + extracted `SectionHeader` widget**: `CircularProgressIndicator` color changed to `theme.colorScheme.onPrimary`; the inline `_buildSectionHeader` helper extracted to `presentation/widgets/section_header.dart` as a `StatelessWidget`, keeping the screen file well under the 250-line limit.
+
+<!-- changelog.md -->
+* Created `PatientInfoCubit` and `PatientInfoState` in `add_visit/presentation/cubits` to handle fetching a patient by ID asynchronously via `PatientRepository`.
+* Added the `PatientInfoCubit` to the dependency injection registry (`injection_container.dart`) and injected it into the route at `/add-visit/:patientId` with an immediate `.fetchPatientInfo(patientId)` trigger.
+* Refactored `AddVisitScreen`'s body to use `BlocBuilder<PatientInfoCubit, PatientInfoState>` so it now renders the real patient data (formatting gender and age unit safely) and passes it to the `PatientInfoHeaderCard`.

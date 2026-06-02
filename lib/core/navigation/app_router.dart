@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../features/registration/presentation/cubits/patient_registration/patient_registration_cubit.dart';
 import '../../features/registration/presentation/screens/patient_registration_screen.dart';
 import '../../features/add_visit/presentation/screens/add_visit_screen.dart';
+import '../../features/add_visit/presentation/cubits/patient_info/patient_info_cubit.dart';
 import '../di/injection_container.dart' as di;
 
 final appRouter = GoRouter(
@@ -20,7 +21,10 @@ final appRouter = GoRouter(
       path: '/add-visit/:patientId',
       builder: (context, state) {
         final patientId = state.pathParameters['patientId'] ?? '';
-        return AddVisitScreen(patientId: patientId);
+        return BlocProvider(
+          create: (_) => di.sl<PatientInfoCubit>()..fetchPatientInfo(patientId),
+          child: AddVisitScreen(patientId: patientId),
+        );
       },
     ),
   ],
