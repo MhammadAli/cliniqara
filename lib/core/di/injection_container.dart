@@ -5,10 +5,10 @@ import 'package:drift/native.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
 
-import '../../data/datasources/local/app_database.dart';
-import '../../data/repositories/patient_repository_impl.dart';
-import '../../domain/repositories/patient_repository.dart';
-import '../../presentation/cubits/patient_registration/patient_registration_cubit.dart';
+import '../../features/registration/data/datasources/local/app_database.dart';
+import '../../features/registration/data/repositories/patient_repository_impl.dart';
+import '../../features/registration/domain/repositories/patient_repository.dart';
+import '../../features/registration/presentation/cubits/patient_registration/patient_registration_cubit.dart';
 
 final sl = GetIt.instance;
 
