@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../domain/entities/patient.dart';
+import '../../core/theme/app_colors.dart';
 
 class GenderSelectionRow extends StatelessWidget {
   final Gender? selectedGender;
@@ -18,15 +19,17 @@ class GenderSelectionRow extends StatelessWidget {
     return Row(
       children: Gender.values.map((gender) {
         final isSelected = selectedGender == gender;
+
+        /* Updated to use AppColors */
         final backgroundColor = isSelected
-            ? theme.colorScheme.primaryContainer
-            : theme.colorScheme.surface;
+            ? AppColors.primaryLight
+            : AppColors.surface;
         final textColor = isSelected
-            ? theme.colorScheme.onPrimaryContainer
-            : theme.colorScheme.onSurface;
+            ? AppColors.primaryBorder
+            : AppColors.textSecondary;
         final borderColor = isSelected
-            ? theme.colorScheme.primary
-            : theme.colorScheme.outline;
+            ? AppColors.primaryBorder
+            : AppColors.border;
 
         return Expanded(
           child: Padding(
@@ -55,7 +58,7 @@ class GenderSelectionRow extends StatelessWidget {
                         color: textColor,
                         fontWeight: isSelected
                             ? FontWeight.bold
-                            : FontWeight.normal,
+                            : FontWeight.w500,
                       ),
                     ),
                   ],

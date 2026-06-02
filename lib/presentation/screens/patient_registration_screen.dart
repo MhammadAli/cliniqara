@@ -6,6 +6,7 @@ import '../cubits/patient_registration/patient_registration_state.dart';
 import '../widgets/custom_text_field.dart';
 import '../widgets/age_input_row.dart';
 import '../widgets/gender_selection_row.dart';
+import '../../core/theme/app_colors.dart';
 
 class PatientRegistrationScreen extends StatefulWidget {
   const PatientRegistrationScreen({super.key});
@@ -73,8 +74,9 @@ class _PatientRegistrationScreenState extends State<PatientRegistrationScreen> {
       SnackBar(
         content: Text(message),
         backgroundColor: isError
-            ? Theme.of(context).colorScheme.error
-            : Colors.green.shade700,
+            ? AppColors.error
+            : AppColors
+                  .secondary /* Using the secondary teal color for success states */,
       ),
     );
   }
@@ -84,13 +86,13 @@ class _PatientRegistrationScreenState extends State<PatientRegistrationScreen> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: theme.colorScheme.surface,
+      backgroundColor: AppColors.background,
       appBar: AppBar(
         title: const Text('Cliniqara'),
         centerTitle: false,
         elevation: 0,
-        backgroundColor: theme.colorScheme.surface,
-        foregroundColor: theme.colorScheme.primary,
+        backgroundColor: AppColors.background,
+        foregroundColor: AppColors.primary,
         titleSpacing: 24,
       ),
       body: BlocConsumer<PatientRegistrationCubit, PatientRegistrationState>(
@@ -99,7 +101,7 @@ class _PatientRegistrationScreenState extends State<PatientRegistrationScreen> {
             _showSnackBar(context, state.message, isError: true);
           } else if (state is PatientRegistrationSuccess) {
             _showSnackBar(context, 'Patient registered successfully.');
-            // TODO: Navigate away (e.g. context.go('/dashboard'))
+            /* TODO: Navigate away (e.g. context.go('/dashboard')) */
           }
         },
         builder: (context, state) {
@@ -113,11 +115,9 @@ class _PatientRegistrationScreenState extends State<PatientRegistrationScreen> {
                   constraints: const BoxConstraints(maxWidth: 800),
                   child: Container(
                     decoration: BoxDecoration(
-                      color: theme.colorScheme.surface,
+                      color: AppColors.surface,
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: theme.colorScheme.outlineVariant,
-                      ),
+                      border: Border.all(color: AppColors.border),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withValues(alpha: .05),
@@ -134,18 +134,19 @@ class _PatientRegistrationScreenState extends State<PatientRegistrationScreen> {
                           'New Patient Registration',
                           style: theme.textTheme.headlineSmall?.copyWith(
                             fontWeight: FontWeight.bold,
+                            color: AppColors.textPrimary,
                           ),
                         ),
                         const SizedBox(height: 8),
                         Text(
                           'Please fill in the patient\'s basic information.',
                           style: theme.textTheme.bodyMedium?.copyWith(
-                            color: theme.colorScheme.onSurfaceVariant,
+                            color: AppColors.textTertiary,
                           ),
                         ),
                         const SizedBox(height: 32),
 
-                        // Name
+                        /* Name */
                         _buildSectionHeader(
                           theme,
                           'Patient Name',
@@ -158,7 +159,7 @@ class _PatientRegistrationScreenState extends State<PatientRegistrationScreen> {
                         ),
                         const SizedBox(height: 24),
 
-                        // Age
+                        /* Age */
                         _buildSectionHeader(theme, 'Age', isRequired: true),
                         const SizedBox(height: 8),
                         AgeInputRow(
@@ -171,7 +172,7 @@ class _PatientRegistrationScreenState extends State<PatientRegistrationScreen> {
                         ),
                         const SizedBox(height: 24),
 
-                        // Gender
+                        /* Gender */
                         _buildSectionHeader(theme, 'Gender', isRequired: true),
                         const SizedBox(height: 8),
                         GenderSelectionRow(
@@ -183,7 +184,7 @@ class _PatientRegistrationScreenState extends State<PatientRegistrationScreen> {
                         ),
                         const SizedBox(height: 24),
 
-                        // Phone Number
+                        /* Phone Number */
                         _buildSectionHeader(theme, 'Phone Number (Optional)'),
                         const SizedBox(height: 8),
                         CustomTextField(
@@ -193,7 +194,7 @@ class _PatientRegistrationScreenState extends State<PatientRegistrationScreen> {
                         ),
                         const SizedBox(height: 48),
 
-                        // Next Button
+                        /* Next Button */
                         SizedBox(
                           width: double.infinity,
                           height: 56,
@@ -202,6 +203,7 @@ class _PatientRegistrationScreenState extends State<PatientRegistrationScreen> {
                                 ? null
                                 : () => _submit(context),
                             style: FilledButton.styleFrom(
+                              backgroundColor: AppColors.primary,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8),
                               ),
@@ -249,6 +251,7 @@ class _PatientRegistrationScreenState extends State<PatientRegistrationScreen> {
           title,
           style: theme.textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.w500,
+            color: AppColors.textPrimary,
           ),
         ),
         if (isRequired)
@@ -257,7 +260,7 @@ class _PatientRegistrationScreenState extends State<PatientRegistrationScreen> {
             child: Text(
               '*',
               style: theme.textTheme.titleMedium?.copyWith(
-                color: theme.colorScheme.error,
+                color: AppColors.error,
                 fontWeight: FontWeight.bold,
               ),
             ),
