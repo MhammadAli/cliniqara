@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../domain/entities/patient.dart';
-import '../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_colors.dart';
 
 class GenderSelectionRow extends StatelessWidget {
   final Gender? selectedGender;

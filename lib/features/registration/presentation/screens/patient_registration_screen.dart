@@ -7,7 +7,7 @@ import '../widgets/custom_text_field.dart';
 import '../widgets/age_input_row.dart';
 import '../widgets/gender_selection_row.dart';
 import '../widgets/section_header.dart'; // extracted widget (Fix 3)
-import '../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_colors.dart';
 
 class PatientRegistrationScreen extends StatefulWidget {
   const PatientRegistrationScreen({super.key});
