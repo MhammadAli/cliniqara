@@ -188,7 +188,7 @@ class _PatientRegistrationScreenState extends State<PatientRegistrationScreen> {
                         const SizedBox(height: 8),
                         CustomTextField(
                           controller: _phoneController,
-                          hintText: 'e.g. +1 234 567 8900',
+                          hintText: 'e.g. +20 123 456 7890',
                           keyboardType: TextInputType.phone,
                         ),
                         const SizedBox(height: 48),
