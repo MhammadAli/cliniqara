@@ -28,7 +28,7 @@ class AgeInputRow extends StatelessWidget {
         ),
         const SizedBox(width: 16),
         Expanded(
-          flex: 3,
+          flex: 4,
           child: SegmentedButton<AgeUnit>(
             showSelectedIcon: false,
             segments: const [
