@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import '../../domain/entities/patient.dart';
 import '../cubits/patient_registration/patient_registration_cubit.dart';
 import '../cubits/patient_registration/patient_registration_state.dart';
@@ -63,7 +64,7 @@ class _PatientRegistrationScreenState extends State<PatientRegistrationScreen> {
             _showSnackBar(context, state.message, isError: true);
           } else if (state is PatientRegistrationSuccess) {
             _showSnackBar(context, 'Patient registered successfully.');
-            /* TODO: context.go('/dashboard') */
+            context.go('/add-visit/${state.patientId}');
           }
         },
         builder: (context, state) {

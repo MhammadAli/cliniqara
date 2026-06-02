@@ -34,7 +34,11 @@ class PatientRegistrationLoading extends PatientRegistrationState {
 }
 
 class PatientRegistrationSuccess extends PatientRegistrationState {
-  const PatientRegistrationSuccess();
+  const PatientRegistrationSuccess({required this.patientId});
+  final String patientId;
+
+  @override
+  List<Object?> get props => [patientId];
 }
 
 class PatientRegistrationError extends PatientRegistrationState {

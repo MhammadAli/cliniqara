@@ -77,7 +77,7 @@ class PatientRegistrationCubit extends Cubit<PatientRegistrationState> {
 
     result.fold(
       (failure) => emit(PatientRegistrationError(failure.message)),
-      (_) => emit(const PatientRegistrationSuccess()),
+      (_) => emit(PatientRegistrationSuccess(patientId: patient.id)),
     );
   }
 }
