@@ -17,9 +17,6 @@ class PatientRegistrationScreen extends StatefulWidget {
       _PatientRegistrationScreenState();
 }
 
-// Controllers are lifecycle-bound to the widget tree — keeping StatefulWidget
-// solely for dispose() is the accepted Flutter pattern when using raw
-// TextEditingControllers. All business state lives in the Cubit.
 class _PatientRegistrationScreenState extends State<PatientRegistrationScreen> {
   final _nameController = TextEditingController();
   final _ageController = TextEditingController();
@@ -187,7 +184,6 @@ class _PatientRegistrationScreenState extends State<PatientRegistrationScreen> {
                                     width: 24,
                                     child: CircularProgressIndicator(
                                       strokeWidth: 2,
-                                      // Fix 2: replaced Colors.white with theme token
                                       valueColor: AlwaysStoppedAnimation<Color>(
                                         theme.colorScheme.onPrimary,
                                       ),
