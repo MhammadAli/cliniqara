@@ -30,6 +30,7 @@ class AgeInputRow extends StatelessWidget {
         Expanded(
           flex: 3,
           child: SegmentedButton<AgeUnit>(
+            showSelectedIcon: false,
             segments: const [
               ButtonSegment<AgeUnit>(
                 value: AgeUnit.years,
