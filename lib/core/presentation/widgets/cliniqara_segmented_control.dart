@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class CliniqaraSegmentedControl<T> extends StatelessWidget {
-  final String label;
+  final String? label;
   final List<T> items;
   final T? selectedValue;
   final String Function(T) itemLabelBuilder;
@@ -9,7 +9,7 @@ class CliniqaraSegmentedControl<T> extends StatelessWidget {
 
   const CliniqaraSegmentedControl({
     super.key,
-    required this.label,
+    this.label,
     required this.items,
     required this.itemLabelBuilder,
     required this.onChanged,
@@ -23,13 +23,15 @@ class CliniqaraSegmentedControl<T> extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          label,
-          style: theme.textTheme.labelSmall?.copyWith(
-            color: theme.colorScheme.outline,
+        if (label != null && label!.isNotEmpty) ...[
+          Text(
+            label!,
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: theme.colorScheme.outline,
+            ),
           ),
-        ),
-        const SizedBox(height: 4),
+          const SizedBox(height: 4),
+        ],
         Container(
           padding: const EdgeInsets.all(4),
           decoration: BoxDecoration(

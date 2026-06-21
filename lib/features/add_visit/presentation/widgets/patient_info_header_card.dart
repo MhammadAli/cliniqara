@@ -148,6 +148,12 @@ class PatientInfoHeaderCard extends StatelessWidget {
                 onTap: () => onSectionChanged('Personal'),
               ),
               _JumpToChip(
+                label: 'Complaint',
+                icon: Icons.chat_bubble_outline,
+                isActive: activeSection == 'Complaint',
+                onTap: () => onSectionChanged('Complaint'),
+              ),
+              _JumpToChip(
                 label: 'HPI',
                 icon: Icons.description_outlined,
                 isActive: activeSection == 'HPI',

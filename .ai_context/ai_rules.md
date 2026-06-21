@@ -19,7 +19,7 @@ You are an expert Flutter developer strictly adhering to Clean Architecture. Rea
 - **Stateless First:** All UI components must be `StatelessWidget`. Use `VoidCallback` or `ValueChanged<T>` to pass events up to the Cubit.
 - **Reusability:** Before creating a new button, input, or card, you MUST ask the user if an existing component exists in the core widgets file.
 - **Styling:** NEVER hardcode colors (e.g., `Color(0xFF2563EB)`) or text styles in the UI. Always use `Theme.of(context).colorScheme` and `Theme.of(context).textTheme`. Remove any fixed widths/heights exported from Figma unless explicitly required.
-- **Responsiveness:** Make layouts responsive using `LayoutBuilder`. If screen width > 600px, constrain the main content width (e.g., max 800px) and center it, or switch to a grid.
+- **Responsiveness:** Make layouts responsive for both mobiles and tablets. Use `LayoutBuilder` or `MediaQuery`. For mobiles (< 600px), use vertical stacking (`Column`). For tablets (> 600px), use side-by-side (`Row`) layouts, constrain the main content width (e.g., max 800px) and center it.
 
 ## 4. Database & Data Handling
 - Use `drift` with SQLite for local storage.

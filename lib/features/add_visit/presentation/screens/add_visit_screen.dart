@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../widgets/patient_info_header_card.dart';
+import '../widgets/chief_complaint_section.dart';
 import '../cubits/patient_info/patient_info_cubit.dart';
 import '../cubits/patient_info/patient_info_state.dart';
 import '../widgets/personal_history_section.dart';
+import '../widgets/prescription_section.dart';
 
 class AddVisitScreen extends StatefulWidget {
   final String patientId;
@@ -72,8 +74,11 @@ class _AddVisitScreenState extends State<AddVisitScreen> {
                           },
                         ),
                         const SizedBox(height: 24),
-                        if (_activeSection == 'Personal')
-                          const PersonalHistorySection(),
+                        const PersonalHistorySection(),
+                        const SizedBox(height: 16),
+                        const ChiefComplaintSection(),
+                        const SizedBox(height: 16),
+                        // const PrescriptionSection(),
                       ],
                     ),
                   ),
