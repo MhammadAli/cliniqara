@@ -4,6 +4,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../widgets/patient_info_header_card.dart';
 import '../cubits/patient_info/patient_info_cubit.dart';
 import '../cubits/patient_info/patient_info_state.dart';
+import '../widgets/personal_history_section.dart';
 
 class AddVisitScreen extends StatefulWidget {
   final String patientId;
@@ -71,7 +72,8 @@ class _AddVisitScreenState extends State<AddVisitScreen> {
                           },
                         ),
                         const SizedBox(height: 24),
-                        // Content for the active section will go here
+                        if (_activeSection == 'Personal')
+                          const PersonalHistorySection(),
                       ],
                     ),
                   ),
