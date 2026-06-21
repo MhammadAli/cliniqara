@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../widgets/patient_info_header_card.dart';
 import '../widgets/chief_complaint_section.dart';
+import '../widgets/hpi_section.dart';
 import '../cubits/patient_info/patient_info_cubit.dart';
 import '../cubits/patient_info/patient_info_state.dart';
 import '../widgets/personal_history_section.dart';
@@ -104,6 +105,10 @@ class _AddVisitScreenState extends State<AddVisitScreen> {
                               onChanged: (data) => context.read<AddVisitFormCubit>().updateChiefComplaint(data),
                             ),
                             const SizedBox(height: 16),
+                            HpiSection(
+                              initialData: formState.draft.hpi,
+                              onChanged: (data) => context.read<AddVisitFormCubit>().updateHpi(data),
+                            ),
                             // const PrescriptionSection(), // uncomment when ready
                             const SizedBox(height: 32),
                             SizedBox(

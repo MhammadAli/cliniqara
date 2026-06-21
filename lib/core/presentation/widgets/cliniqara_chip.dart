@@ -22,7 +22,7 @@ class CliniqaraChip extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected ? theme.colorScheme.primaryContainer.withOpacity(0.2) : theme.colorScheme.surface,
+          color: isSelected ? theme.colorScheme.primaryContainer.withValues(alpha: 0.2) : theme.colorScheme.surface,
           border: Border.all(
             color: isSelected ? theme.colorScheme.primary : theme.colorScheme.outlineVariant,
           ),

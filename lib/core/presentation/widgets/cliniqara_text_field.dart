@@ -7,6 +7,7 @@ class CliniqaraTextField extends StatelessWidget {
   final Widget? suffixIcon;
   final TextEditingController? controller;
   final void Function(String)? onChanged;
+  final void Function(String)? onSubmitted;
   final TextInputType keyboardType;
   final int maxLines;
 
@@ -18,6 +19,7 @@ class CliniqaraTextField extends StatelessWidget {
     this.suffixIcon,
     this.controller,
     this.onChanged,
+    this.onSubmitted,
     this.keyboardType = TextInputType.text,
     this.maxLines = 1,
   });
@@ -39,6 +41,7 @@ class CliniqaraTextField extends StatelessWidget {
         TextField(
           controller: controller,
           onChanged: onChanged,
+          onSubmitted: onSubmitted,
           keyboardType: keyboardType,
           maxLines: maxLines,
           style: theme.textTheme.bodyMedium?.copyWith(
