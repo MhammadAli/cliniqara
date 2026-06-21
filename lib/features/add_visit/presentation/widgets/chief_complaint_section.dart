@@ -1,19 +1,53 @@
 import 'package:flutter/material.dart';
+import '../../domain/entities/chief_complaint.dart';
 import '../../../../core/presentation/widgets/collapsible_section.dart';
 import '../../../../core/presentation/widgets/cliniqara_text_field.dart';
 import '../../../../core/presentation/widgets/cliniqara_segmented_control.dart';
 import '../../../../core/presentation/widgets/cliniqara_chip.dart';
 
 class ChiefComplaintSection extends StatefulWidget {
-  const ChiefComplaintSection({super.key});
+  final ChiefComplaint? initialData;
+  final ValueChanged<ChiefComplaint>? onChanged;
+
+  const ChiefComplaintSection({
+    super.key,
+    this.initialData,
+    this.onChanged,
+  });
 
   @override
   State<ChiefComplaintSection> createState() => _ChiefComplaintSectionState();
 }
 
 class _ChiefComplaintSectionState extends State<ChiefComplaintSection> {
-  String? _durationUnit = 'Days';
-  final List<String> _selectedComplaints = [];
+  late String? _durationUnit = widget.initialData?.durationUnit ?? 'Days';
+  late final List<String> _selectedComplaints = List.from(widget.initialData?.selectedComplaints ?? []);
+  
+  late final TextEditingController _mainComplaintController = TextEditingController(text: widget.initialData?.mainComplaint ?? '');
+  late final TextEditingController _durationController = TextEditingController(text: widget.initialData?.duration?.toString() ?? '');
+
+  @override
+  void initState() {
+    super.initState();
+    _mainComplaintController.addListener(_notifyChanged);
+    _durationController.addListener(_notifyChanged);
+  }
+
+  @override
+  void dispose() {
+    _mainComplaintController.dispose();
+    _durationController.dispose();
+    super.dispose();
+  }
+
+  void _notifyChanged() {
+    widget.onChanged?.call(ChiefComplaint(
+      mainComplaint: _mainComplaintController.text.isNotEmpty ? _mainComplaintController.text : null,
+      duration: int.tryParse(_durationController.text),
+      durationUnit: _durationUnit,
+      selectedComplaints: _selectedComplaints,
+    ));
+  }
 
   Widget _buildResponsiveRow(BuildContext context, List<Widget> children) {
     final isMobile = MediaQuery.of(context).size.width < 600;
@@ -67,17 +101,28 @@ class _ChiefComplaintSectionState extends State<ChiefComplaintSection> {
 
   Widget _buildMainComplaintRow(BuildContext context) {
     return _buildResponsiveRow(context, [
-      const CliniqaraTextField(
+      CliniqaraTextField(
         label: 'Main Complaint',
         hintText: 'Search or enter main complaint',
-        prefixIcon: Icon(Icons.search, size: 20),
+        prefixIcon: const Icon(Icons.search, size: 20),
+        controller: _mainComplaintController,
       ),
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 24), // alignment spacer for mobile
           OutlinedButton.icon(
-            onPressed: () {},
+            onPressed: () {
+              if (_mainComplaintController.text.isNotEmpty) {
+                setState(() {
+                  if (!_selectedComplaints.contains(_mainComplaintController.text)) {
+                    _selectedComplaints.add(_mainComplaintController.text);
+                  }
+                  _mainComplaintController.clear();
+                  _notifyChanged();
+                });
+              }
+            },
             icon: const Icon(Icons.add),
             label: const Text('Add Custom'),
             style: OutlinedButton.styleFrom(
@@ -120,6 +165,7 @@ class _ChiefComplaintSectionState extends State<ChiefComplaintSection> {
                   } else {
                     _selectedComplaints.add(s);
                   }
+                  _notifyChanged();
                 });
               },
             );
@@ -131,17 +177,21 @@ class _ChiefComplaintSectionState extends State<ChiefComplaintSection> {
 
   Widget _buildDurationRow(BuildContext context) {
     return _buildResponsiveRow(context, [
-      const CliniqaraTextField(
+      CliniqaraTextField(
         label: 'Duration',
         hintText: 'Enter duration',
         keyboardType: TextInputType.number,
+        controller: _durationController,
       ),
       CliniqaraSegmentedControl<String>(
         label: '',
         items: const ['Hours', 'Days', 'Months', 'Years'],
         selectedValue: _durationUnit,
         itemLabelBuilder: (item) => item,
-        onChanged: (val) => setState(() => _durationUnit = val),
+        onChanged: (val) {
+          setState(() => _durationUnit = val);
+          _notifyChanged();
+        },
       ),
       const SizedBox.shrink(),
     ]);
@@ -187,6 +237,7 @@ class _ChiefComplaintSectionState extends State<ChiefComplaintSection> {
                         setState(() {
                           _selectedComplaints.remove(c);
                         });
+                        _notifyChanged();
                       },
                     );
                   }).toList(),

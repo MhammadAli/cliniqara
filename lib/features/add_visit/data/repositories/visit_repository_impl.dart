@@ -2,8 +2,10 @@ import 'package:dartz/dartz.dart';
 import '../../../../core/error/failures.dart';
 import '../../domain/entities/visit.dart';
 import '../../domain/repositories/visit_repository.dart';
-import '../../../registration/data/datasources/local/app_database.dart';
+import 'dart:convert';
 import 'package:drift/drift.dart';
+import '../../../registration/data/datasources/local/app_database.dart';
+import '../../domain/entities/visit_draft.dart';
 
 class VisitRepositoryImpl implements VisitRepository {
   final AppDatabase database;
@@ -17,9 +19,7 @@ class VisitRepositoryImpl implements VisitRepository {
         id: Value(visit.id),
         patientId: Value(visit.patientId),
         visitDate: Value(visit.visitDate),
-        // we can store extraData as JSON if we want, currently it's just a text column. Let's assume we map it later. 
-        // For simplicity, we just save a string for extraData.
-        extraData: const Value('{}'), 
+        extraData: Value(jsonEncode(visit.draft.toJson())), 
       );
       await database.into(database.visits).insert(companion);
       return const Right(null);
@@ -35,12 +35,22 @@ class VisitRepositoryImpl implements VisitRepository {
             ..where((tbl) => tbl.patientId.equals(patientId)))
           .get();
       
-      final visits = result.map((row) => Visit(
-        id: row.id,
-        patientId: row.patientId,
-        visitDate: row.visitDate,
-        extraData: const {}, // In real world, parse JSON from row.extraData
-      )).toList();
+      final visits = result.map((row) {
+        VisitDraft draft = const VisitDraft();
+        try {
+          if (row.extraData.isNotEmpty && row.extraData != '{}') {
+            draft = VisitDraft.fromJson(jsonDecode(row.extraData));
+          }
+        } catch (e) {
+           // Fallback to empty draft if decoding fails
+        }
+        return Visit(
+          id: row.id,
+          patientId: row.patientId,
+          visitDate: row.visitDate,
+          draft: draft,
+        );
+      }).toList();
 
       return Right(visits);
     } catch (e) {

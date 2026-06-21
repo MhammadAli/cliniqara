@@ -6,7 +6,13 @@ import '../widgets/chief_complaint_section.dart';
 import '../cubits/patient_info/patient_info_cubit.dart';
 import '../cubits/patient_info/patient_info_state.dart';
 import '../widgets/personal_history_section.dart';
-import '../widgets/prescription_section.dart';
+import '../cubit/visit_cubit.dart';
+import '../cubits/add_visit_form/add_visit_form_cubit.dart';
+import '../cubits/add_visit_form/add_visit_form_state.dart';
+import '../../domain/entities/visit.dart';
+import 'package:uuid/uuid.dart';
+import 'package:go_router/go_router.dart';
+import '../cubit/visit_state.dart';
 
 class AddVisitScreen extends StatefulWidget {
   final String patientId;
@@ -22,9 +28,21 @@ class _AddVisitScreenState extends State<AddVisitScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: AppBar(
+    return BlocProvider(
+      create: (context) => AddVisitFormCubit(),
+      child: BlocListener<VisitCubit, VisitState>(
+        listener: (context, state) {
+          if (state is VisitActionSuccess) {
+            context.go('/');
+          } else if (state is VisitError) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(state.message)),
+            );
+          }
+        },
+        child: Scaffold(
+          backgroundColor: AppColors.background,
+        appBar: AppBar(
         title: const Text('Add Visit'),
         centerTitle: false,
         elevation: 0,
@@ -53,15 +71,17 @@ class _AddVisitScreenState extends State<AddVisitScreen> {
                 patient.age.unit.name.substring(1);
 
             return SafeArea(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(24.0),
-                child: Center(
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 800),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        PatientInfoHeaderCard(
+              child: BlocBuilder<AddVisitFormCubit, AddVisitFormState>(
+                builder: (context, formState) {
+                  return SingleChildScrollView(
+                    padding: const EdgeInsets.all(24.0),
+                    child: Center(
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 800),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            PatientInfoHeaderCard(
                           patientName: patient.fullName,
                           age: patient.age.value,
                           gender: genderStr,
@@ -73,21 +93,51 @@ class _AddVisitScreenState extends State<AddVisitScreen> {
                             });
                           },
                         ),
-                        const SizedBox(height: 24),
-                        const PersonalHistorySection(),
-                        const SizedBox(height: 16),
-                        const ChiefComplaintSection(),
-                        const SizedBox(height: 16),
-                        // const PrescriptionSection(),
-                      ],
+                            const SizedBox(height: 24),
+                            PersonalHistorySection(
+                              initialData: formState.draft.personalHistory,
+                              onChanged: (data) => context.read<AddVisitFormCubit>().updatePersonalHistory(data),
+                            ),
+                            const SizedBox(height: 16),
+                            ChiefComplaintSection(
+                              initialData: formState.draft.chiefComplaint,
+                              onChanged: (data) => context.read<AddVisitFormCubit>().updateChiefComplaint(data),
+                            ),
+                            const SizedBox(height: 16),
+                            // const PrescriptionSection(), // uncomment when ready
+                            const SizedBox(height: 32),
+                            SizedBox(
+                              width: double.infinity,
+                              child: FilledButton(
+                                style: FilledButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(vertical: 16),
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                ),
+                                onPressed: formState.draft.canSubmit ? () {
+                                  final visit = Visit(
+                                    id: const Uuid().v4(),
+                                    patientId: patient.id,
+                                    visitDate: DateTime.now(),
+                                    draft: formState.draft,
+                                  );
+                                  context.read<VisitCubit>().addVisit(visit);
+                                } : null,
+                                child: const Text('Submit Visit', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
-                  ),
-                ),
+                  );
+                },
               ),
             );
           }
           return const SizedBox.shrink();
         },
+      ),
+      ),
       ),
     );
   }

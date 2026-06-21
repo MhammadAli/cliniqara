@@ -10,6 +10,9 @@ import '../../features/registration/data/repositories/patient_repository_impl.da
 import '../../features/registration/domain/repositories/patient_repository.dart';
 import '../../features/registration/presentation/cubits/patient_registration/patient_registration_cubit.dart';
 import '../../features/add_visit/presentation/cubits/patient_info/patient_info_cubit.dart';
+import '../../features/add_visit/data/repositories/visit_repository_impl.dart';
+import '../../features/add_visit/domain/repositories/visit_repository.dart';
+import '../../features/add_visit/presentation/cubit/visit_cubit.dart';
 
 final sl = GetIt.instance;
 
@@ -17,10 +20,14 @@ Future<void> init() async {
   // Cubits
   sl.registerFactory(() => PatientRegistrationCubit(repository: sl()));
   sl.registerFactory(() => PatientInfoCubit(repository: sl()));
+  sl.registerFactory(() => VisitCubit(repository: sl()));
 
   // Repositories
   sl.registerLazySingleton<PatientRepository>(
     () => PatientRepositoryImpl(database: sl()),
+  );
+  sl.registerLazySingleton<VisitRepository>(
+    () => VisitRepositoryImpl(sl()),
   );
 
   // Data sources
