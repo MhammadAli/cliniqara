@@ -16,10 +16,32 @@ class Patients extends Table {
   Set<Column> get primaryKey => {id};
 }
 
-@DriftDatabase(tables: [Patients])
+@DataClassName('VisitModel')
+class Visits extends Table {
+  TextColumn get id => text()();
+  TextColumn get patientId => text().references(Patients, #id)();
+  DateTimeColumn get visitDate => dateTime()();
+  TextColumn get extraData => text().withDefault(const Constant('{}'))();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+
+@DriftDatabase(tables: [Patients, Visits])
 class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
+
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+        onCreate: (Migrator m) => m.createAll(),
+        onUpgrade: (Migrator m, int from, int to) async {
+          if (from < 2) {
+            await m.createTable(visits);
+          }
+        },
+      );
 }

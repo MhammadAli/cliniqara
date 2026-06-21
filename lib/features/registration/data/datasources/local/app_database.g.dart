@@ -469,15 +469,326 @@ class PatientsCompanion extends UpdateCompanion<PatientModel> {
   }
 }
 
+class $VisitsTable extends Visits with TableInfo<$VisitsTable, VisitModel> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $VisitsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _patientIdMeta = const VerificationMeta(
+    'patientId',
+  );
+  @override
+  late final GeneratedColumn<String> patientId = GeneratedColumn<String>(
+    'patient_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES patients (id)',
+    ),
+  );
+  static const VerificationMeta _visitDateMeta = const VerificationMeta(
+    'visitDate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> visitDate = GeneratedColumn<DateTime>(
+    'visit_date',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _extraDataMeta = const VerificationMeta(
+    'extraData',
+  );
+  @override
+  late final GeneratedColumn<String> extraData = GeneratedColumn<String>(
+    'extra_data',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('{}'),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, patientId, visitDate, extraData];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'visits';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<VisitModel> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('patient_id')) {
+      context.handle(
+        _patientIdMeta,
+        patientId.isAcceptableOrUnknown(data['patient_id']!, _patientIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_patientIdMeta);
+    }
+    if (data.containsKey('visit_date')) {
+      context.handle(
+        _visitDateMeta,
+        visitDate.isAcceptableOrUnknown(data['visit_date']!, _visitDateMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_visitDateMeta);
+    }
+    if (data.containsKey('extra_data')) {
+      context.handle(
+        _extraDataMeta,
+        extraData.isAcceptableOrUnknown(data['extra_data']!, _extraDataMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  VisitModel map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return VisitModel(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      patientId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}patient_id'],
+      )!,
+      visitDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}visit_date'],
+      )!,
+      extraData: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}extra_data'],
+      )!,
+    );
+  }
+
+  @override
+  $VisitsTable createAlias(String alias) {
+    return $VisitsTable(attachedDatabase, alias);
+  }
+}
+
+class VisitModel extends DataClass implements Insertable<VisitModel> {
+  final String id;
+  final String patientId;
+  final DateTime visitDate;
+  final String extraData;
+  const VisitModel({
+    required this.id,
+    required this.patientId,
+    required this.visitDate,
+    required this.extraData,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['patient_id'] = Variable<String>(patientId);
+    map['visit_date'] = Variable<DateTime>(visitDate);
+    map['extra_data'] = Variable<String>(extraData);
+    return map;
+  }
+
+  VisitsCompanion toCompanion(bool nullToAbsent) {
+    return VisitsCompanion(
+      id: Value(id),
+      patientId: Value(patientId),
+      visitDate: Value(visitDate),
+      extraData: Value(extraData),
+    );
+  }
+
+  factory VisitModel.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return VisitModel(
+      id: serializer.fromJson<String>(json['id']),
+      patientId: serializer.fromJson<String>(json['patientId']),
+      visitDate: serializer.fromJson<DateTime>(json['visitDate']),
+      extraData: serializer.fromJson<String>(json['extraData']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'patientId': serializer.toJson<String>(patientId),
+      'visitDate': serializer.toJson<DateTime>(visitDate),
+      'extraData': serializer.toJson<String>(extraData),
+    };
+  }
+
+  VisitModel copyWith({
+    String? id,
+    String? patientId,
+    DateTime? visitDate,
+    String? extraData,
+  }) => VisitModel(
+    id: id ?? this.id,
+    patientId: patientId ?? this.patientId,
+    visitDate: visitDate ?? this.visitDate,
+    extraData: extraData ?? this.extraData,
+  );
+  VisitModel copyWithCompanion(VisitsCompanion data) {
+    return VisitModel(
+      id: data.id.present ? data.id.value : this.id,
+      patientId: data.patientId.present ? data.patientId.value : this.patientId,
+      visitDate: data.visitDate.present ? data.visitDate.value : this.visitDate,
+      extraData: data.extraData.present ? data.extraData.value : this.extraData,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('VisitModel(')
+          ..write('id: $id, ')
+          ..write('patientId: $patientId, ')
+          ..write('visitDate: $visitDate, ')
+          ..write('extraData: $extraData')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, patientId, visitDate, extraData);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is VisitModel &&
+          other.id == this.id &&
+          other.patientId == this.patientId &&
+          other.visitDate == this.visitDate &&
+          other.extraData == this.extraData);
+}
+
+class VisitsCompanion extends UpdateCompanion<VisitModel> {
+  final Value<String> id;
+  final Value<String> patientId;
+  final Value<DateTime> visitDate;
+  final Value<String> extraData;
+  final Value<int> rowid;
+  const VisitsCompanion({
+    this.id = const Value.absent(),
+    this.patientId = const Value.absent(),
+    this.visitDate = const Value.absent(),
+    this.extraData = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  VisitsCompanion.insert({
+    required String id,
+    required String patientId,
+    required DateTime visitDate,
+    this.extraData = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       patientId = Value(patientId),
+       visitDate = Value(visitDate);
+  static Insertable<VisitModel> custom({
+    Expression<String>? id,
+    Expression<String>? patientId,
+    Expression<DateTime>? visitDate,
+    Expression<String>? extraData,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (patientId != null) 'patient_id': patientId,
+      if (visitDate != null) 'visit_date': visitDate,
+      if (extraData != null) 'extra_data': extraData,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  VisitsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? patientId,
+    Value<DateTime>? visitDate,
+    Value<String>? extraData,
+    Value<int>? rowid,
+  }) {
+    return VisitsCompanion(
+      id: id ?? this.id,
+      patientId: patientId ?? this.patientId,
+      visitDate: visitDate ?? this.visitDate,
+      extraData: extraData ?? this.extraData,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (patientId.present) {
+      map['patient_id'] = Variable<String>(patientId.value);
+    }
+    if (visitDate.present) {
+      map['visit_date'] = Variable<DateTime>(visitDate.value);
+    }
+    if (extraData.present) {
+      map['extra_data'] = Variable<String>(extraData.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('VisitsCompanion(')
+          ..write('id: $id, ')
+          ..write('patientId: $patientId, ')
+          ..write('visitDate: $visitDate, ')
+          ..write('extraData: $extraData, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $PatientsTable patients = $PatientsTable(this);
+  late final $VisitsTable visits = $VisitsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [patients];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [patients, visits];
 }
 
 typedef $$PatientsTableCreateCompanionBuilder =
@@ -502,6 +813,30 @@ typedef $$PatientsTableUpdateCompanionBuilder =
       Value<String> extraData,
       Value<int> rowid,
     });
+
+final class $$PatientsTableReferences
+    extends BaseReferences<_$AppDatabase, $PatientsTable, PatientModel> {
+  $$PatientsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static MultiTypedResultKey<$VisitsTable, List<VisitModel>> _visitsRefsTable(
+    _$AppDatabase db,
+  ) => MultiTypedResultKey.fromTable(
+    db.visits,
+    aliasName: $_aliasNameGenerator(db.patients.id, db.visits.patientId),
+  );
+
+  $$VisitsTableProcessedTableManager get visitsRefs {
+    final manager = $$VisitsTableTableManager(
+      $_db,
+      $_db.visits,
+    ).filter((f) => f.patientId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_visitsRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
 
 class $$PatientsTableFilterComposer
     extends Composer<_$AppDatabase, $PatientsTable> {
@@ -546,6 +881,31 @@ class $$PatientsTableFilterComposer
     column: $table.extraData,
     builder: (column) => ColumnFilters(column),
   );
+
+  Expression<bool> visitsRefs(
+    Expression<bool> Function($$VisitsTableFilterComposer f) f,
+  ) {
+    final $$VisitsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.visits,
+      getReferencedColumn: (t) => t.patientId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$VisitsTableFilterComposer(
+            $db: $db,
+            $table: $db.visits,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$PatientsTableOrderingComposer
@@ -624,6 +984,31 @@ class $$PatientsTableAnnotationComposer
 
   GeneratedColumn<String> get extraData =>
       $composableBuilder(column: $table.extraData, builder: (column) => column);
+
+  Expression<T> visitsRefs<T extends Object>(
+    Expression<T> Function($$VisitsTableAnnotationComposer a) f,
+  ) {
+    final $$VisitsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.visits,
+      getReferencedColumn: (t) => t.patientId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$VisitsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.visits,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$PatientsTableTableManager
@@ -637,12 +1022,9 @@ class $$PatientsTableTableManager
           $$PatientsTableAnnotationComposer,
           $$PatientsTableCreateCompanionBuilder,
           $$PatientsTableUpdateCompanionBuilder,
-          (
-            PatientModel,
-            BaseReferences<_$AppDatabase, $PatientsTable, PatientModel>,
-          ),
+          (PatientModel, $$PatientsTableReferences),
           PatientModel,
-          PrefetchHooks Function()
+          PrefetchHooks Function({bool visitsRefs})
         > {
   $$PatientsTableTableManager(_$AppDatabase db, $PatientsTable table)
     : super(
@@ -696,9 +1078,39 @@ class $$PatientsTableTableManager
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$PatientsTableReferences(db, table, e),
+                ),
+              )
               .toList(),
-          prefetchHooksCallback: null,
+          prefetchHooksCallback: ({visitsRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [if (visitsRefs) db.visits],
+              addJoins: null,
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (visitsRefs)
+                    await $_getPrefetchedData<
+                      PatientModel,
+                      $PatientsTable,
+                      VisitModel
+                    >(
+                      currentTable: table,
+                      referencedTable: $$PatientsTableReferences
+                          ._visitsRefsTable(db),
+                      managerFromTypedResult: (p0) =>
+                          $$PatientsTableReferences(db, table, p0).visitsRefs,
+                      referencedItemsForCurrentItem: (item, referencedItems) =>
+                          referencedItems.where((e) => e.patientId == item.id),
+                      typedResults: items,
+                    ),
+                ];
+              },
+            );
+          },
         ),
       );
 }
@@ -713,12 +1125,305 @@ typedef $$PatientsTableProcessedTableManager =
       $$PatientsTableAnnotationComposer,
       $$PatientsTableCreateCompanionBuilder,
       $$PatientsTableUpdateCompanionBuilder,
-      (
-        PatientModel,
-        BaseReferences<_$AppDatabase, $PatientsTable, PatientModel>,
-      ),
+      (PatientModel, $$PatientsTableReferences),
       PatientModel,
-      PrefetchHooks Function()
+      PrefetchHooks Function({bool visitsRefs})
+    >;
+typedef $$VisitsTableCreateCompanionBuilder =
+    VisitsCompanion Function({
+      required String id,
+      required String patientId,
+      required DateTime visitDate,
+      Value<String> extraData,
+      Value<int> rowid,
+    });
+typedef $$VisitsTableUpdateCompanionBuilder =
+    VisitsCompanion Function({
+      Value<String> id,
+      Value<String> patientId,
+      Value<DateTime> visitDate,
+      Value<String> extraData,
+      Value<int> rowid,
+    });
+
+final class $$VisitsTableReferences
+    extends BaseReferences<_$AppDatabase, $VisitsTable, VisitModel> {
+  $$VisitsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $PatientsTable _patientIdTable(_$AppDatabase db) => db.patients
+      .createAlias($_aliasNameGenerator(db.visits.patientId, db.patients.id));
+
+  $$PatientsTableProcessedTableManager get patientId {
+    final $_column = $_itemColumn<String>('patient_id')!;
+
+    final manager = $$PatientsTableTableManager(
+      $_db,
+      $_db.patients,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_patientIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$VisitsTableFilterComposer
+    extends Composer<_$AppDatabase, $VisitsTable> {
+  $$VisitsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get visitDate => $composableBuilder(
+    column: $table.visitDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get extraData => $composableBuilder(
+    column: $table.extraData,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$PatientsTableFilterComposer get patientId {
+    final $$PatientsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.patientId,
+      referencedTable: $db.patients,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PatientsTableFilterComposer(
+            $db: $db,
+            $table: $db.patients,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$VisitsTableOrderingComposer
+    extends Composer<_$AppDatabase, $VisitsTable> {
+  $$VisitsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get visitDate => $composableBuilder(
+    column: $table.visitDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get extraData => $composableBuilder(
+    column: $table.extraData,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$PatientsTableOrderingComposer get patientId {
+    final $$PatientsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.patientId,
+      referencedTable: $db.patients,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PatientsTableOrderingComposer(
+            $db: $db,
+            $table: $db.patients,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$VisitsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $VisitsTable> {
+  $$VisitsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get visitDate =>
+      $composableBuilder(column: $table.visitDate, builder: (column) => column);
+
+  GeneratedColumn<String> get extraData =>
+      $composableBuilder(column: $table.extraData, builder: (column) => column);
+
+  $$PatientsTableAnnotationComposer get patientId {
+    final $$PatientsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.patientId,
+      referencedTable: $db.patients,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PatientsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.patients,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$VisitsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $VisitsTable,
+          VisitModel,
+          $$VisitsTableFilterComposer,
+          $$VisitsTableOrderingComposer,
+          $$VisitsTableAnnotationComposer,
+          $$VisitsTableCreateCompanionBuilder,
+          $$VisitsTableUpdateCompanionBuilder,
+          (VisitModel, $$VisitsTableReferences),
+          VisitModel,
+          PrefetchHooks Function({bool patientId})
+        > {
+  $$VisitsTableTableManager(_$AppDatabase db, $VisitsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$VisitsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$VisitsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$VisitsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> patientId = const Value.absent(),
+                Value<DateTime> visitDate = const Value.absent(),
+                Value<String> extraData = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => VisitsCompanion(
+                id: id,
+                patientId: patientId,
+                visitDate: visitDate,
+                extraData: extraData,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String patientId,
+                required DateTime visitDate,
+                Value<String> extraData = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => VisitsCompanion.insert(
+                id: id,
+                patientId: patientId,
+                visitDate: visitDate,
+                extraData: extraData,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) =>
+                    (e.readTable(table), $$VisitsTableReferences(db, table, e)),
+              )
+              .toList(),
+          prefetchHooksCallback: ({patientId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (patientId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.patientId,
+                                referencedTable: $$VisitsTableReferences
+                                    ._patientIdTable(db),
+                                referencedColumn: $$VisitsTableReferences
+                                    ._patientIdTable(db)
+                                    .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$VisitsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $VisitsTable,
+      VisitModel,
+      $$VisitsTableFilterComposer,
+      $$VisitsTableOrderingComposer,
+      $$VisitsTableAnnotationComposer,
+      $$VisitsTableCreateCompanionBuilder,
+      $$VisitsTableUpdateCompanionBuilder,
+      (VisitModel, $$VisitsTableReferences),
+      VisitModel,
+      PrefetchHooks Function({bool patientId})
     >;
 
 class $AppDatabaseManager {
@@ -726,4 +1431,6 @@ class $AppDatabaseManager {
   $AppDatabaseManager(this._db);
   $$PatientsTableTableManager get patients =>
       $$PatientsTableTableManager(_db, _db.patients);
+  $$VisitsTableTableManager get visits =>
+      $$VisitsTableTableManager(_db, _db.visits);
 }
