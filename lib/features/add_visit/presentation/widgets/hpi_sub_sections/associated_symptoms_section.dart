@@ -50,7 +50,7 @@ class _AssociatedSymptomsSectionState extends State<AssociatedSymptomsSection> {
   void _notifyChanged() {
     widget.onChanged(
       (widget.initialData ?? const Hpi()).copyWith(
-        associatedSymptoms: _associatedSymptoms,
+        associatedSymptoms: List.from(_associatedSymptoms),
         aggravatingFactors: _aggravatingController.text.isNotEmpty
             ? _aggravatingController.text
             : null,

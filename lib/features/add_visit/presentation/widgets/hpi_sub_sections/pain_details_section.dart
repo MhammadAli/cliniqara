@@ -67,14 +67,14 @@ class _PainDetailsSectionState extends State<PainDetailsSection> {
         location: _locationController.text.isNotEmpty
             ? _locationController.text
             : null,
-        character: _character,
+        character: List.from(_character),
         radiation: _radiationController.text.isNotEmpty
             ? _radiationController.text
             : null,
         severity: _severity > 0 ? _severity.toInt() : null,
-        timing: _timing,
-        postural: _postural,
-        diurnal: _diurnal,
+        timing: List.from(_timing),
+        postural: List.from(_postural),
+        diurnal: List.from(_diurnal),
       ),
     );
   }

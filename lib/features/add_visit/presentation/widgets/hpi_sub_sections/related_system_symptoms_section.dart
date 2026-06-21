@@ -40,7 +40,10 @@ class _RelatedSystemSymptomsSectionState
   }
 
   void _notifyChanged() {
-    widget.onChanged(_relatedSystems, _details);
+    widget.onChanged(
+      List.from(_relatedSystems),
+      _details.map((key, value) => MapEntry(key, List.from(value))),
+    );
   }
 
   Widget _buildSystemAccordion(String systemName) {

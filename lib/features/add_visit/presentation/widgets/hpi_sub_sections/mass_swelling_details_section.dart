@@ -77,8 +77,8 @@ class _MassSwellingDetailsSectionState
             ? _specificSiteController.text
             : null,
         side: _side,
-        distribution: _distribution,
-        relationToStructures: _relationToStructures,
+        distribution: List.from(_distribution),
+        relationToStructures: List.from(_relationToStructures),
         number: _number,
         pain: _pain,
         sizeChange: _sizeChange,

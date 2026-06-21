@@ -66,6 +66,7 @@ class HpiSection extends StatelessWidget {
           ),
           SystemicReviewAccordionSection(
             initialSystemicReview: currentHpi.systemicReview,
+            disabledSystems: currentHpi.relatedSystemSymptoms,
             onChanged: (review) {
               onChanged(currentHpi.copyWith(
                 systemicReview: review,

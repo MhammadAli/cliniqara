@@ -49,8 +49,8 @@ class _AnalysisOfComplaintSectionState
     widget.onChanged(
       ComplaintAnalysis(
         onsetMode: _onsetMode,
-        circumstancesAtOnset: _circumstances,
-        triggerAtOnset: _triggers,
+        circumstancesAtOnset: List.from(_circumstances),
+        triggerAtOnset: List.from(_triggers),
         course: _course,
       ),
     );

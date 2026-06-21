@@ -55,7 +55,7 @@ class _ExcretaDetailsSectionState extends State<ExcretaDetailsSection> {
       ExcretaDetails(
         amount: _amount,
         color: _color,
-        content: _content,
+        content: List.from(_content),
         consistency: _consistency,
         odor: _odor,
         postural: _postural,

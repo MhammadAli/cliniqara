@@ -6,11 +6,13 @@ import 'systemic_review_constants.dart';
 
 class SystemicReviewAccordionSection extends StatefulWidget {
   final Map<String, SystemReview> initialSystemicReview;
+  final List<String> disabledSystems;
   final ValueChanged<Map<String, SystemReview>> onChanged;
 
   const SystemicReviewAccordionSection({
     super.key,
     required this.initialSystemicReview,
+    required this.disabledSystems,
     required this.onChanged,
   });
 
@@ -51,7 +53,7 @@ class _SystemicReviewAccordionSectionState extends State<SystemicReviewAccordion
         otherFindings: text != null && text.isNotEmpty ? text : null,
       );
     }
-    widget.onChanged(_systemicReview);
+    widget.onChanged(Map.from(_systemicReview));
   }
 
   Widget _buildSystemAccordion(String systemName) {
@@ -215,6 +217,7 @@ class _SystemicReviewAccordionSectionState extends State<SystemicReviewAccordion
                 ),
                 child: Column(
                   children: abnormalFindingsOptions.keys
+                      .where((sys) => !widget.disabledSystems.contains(sys))
                       .map((sys) => _buildSystemAccordion(sys))
                       .toList(),
                 ),
